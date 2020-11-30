@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "http://mybatis.org/dtd/mybatis-3-mapper.dtd" "mybatis-3-mapper.dtd" >
+<mapper namespace="com.baizhi.dao.VideoDAO">
+
+    <!--查所有  分页-->
+    <select id="findVideo" resultType="Video">
+        select id,title,brief,cover_path,video_path,upload_time,like_count,play_count,category_id,user_id,group_id,status
+        from yx_video
+        limit #{start},#{rows}
+    </select>
+
+    <!--查数据库所有数据-->
+    <select id="totalCounts" resultType="Integer">
+        select count(*)
+        from yx_video
+    </select>
+
+    <!--添加视频-->
+    <insert id="addVideo" parameterType="Video">
+        insert into yx_video
+        values (#{id},#{title},#{brief},#{cover_path},#{video_path},#{upload_time},#{like_count},#{play_count},#{category_id},#{user_id},#{group_id},#{status})
+    </insert>
+
+    <!--文件上传-->
+
+
+    <!--  修改  -->
+    <update id="update" parameterType="Video">
+        update yx_video
+        <set>
+            <if test="title!=null">
+                title=#{title},
+            </if>
+            <if test="brief!=null">
+                brief=#{brief},
+            </if>
+            <if test="cover_path!=null">
+                cover_path=#{cover_path},
+            </if>
+            <if test="video_path!=null">
+                video_path=#{video_path},
+            </if>
+            <if test="upload_time!=null">
+                upload_time=#{upload_time},
+            </if>
+            <if test="like_count!=null">
+                like_count=#{like_count},
+            </if>
+            <if test="play_count!=null">
+                play_count=#{play_count},
+            </if>
+            <if test="category_id!=null">
+                category_id=#{category_id},
+            </if>
+            <if test="user_id!=null">
+                user_id=#{user_id},
+            </if>
+            <if test="group_id!=null">
+                group_id=#{group_id},
+            </if>
+            <if test="status!=null">
+                status=#{status},
+            </if>
+        </set>
+        where id = #{id}
+
+    </update>
+
+    <select id="queryOne" parameterType="String" resultType="Video">
+        select id,title,brief,cover_path,video_path,upload_time,like_count,play_count,category_id,user_id,group_id,status
+        from yx_video
+        where id = #{id}
+    </select>
+
+<!--  删除  -->
+    <!--  delete  -->
+    <delete id="delete" parameterType="String">
+        delete from yx_video
+        where id=#{id}
+    </delete>
+
+    <select id="queryByReleaseTime" resultType="com.baizhi.po.VideoPO">
+
+        select
+        c.cate_name cateName,
+        v.id,v.title videoTitle,v.cover_path cover,v.video_path path,
+        v.upload_time uploadTime,v.brief description,
+        u.head userPhoto
+        from yx_sort c
+        right join yx_video v on c.id=v.category_id
+        left join yx_user u on v.user_id=u.id
+        order by v.upload_time desc
+    </select>
+
+</mapper>

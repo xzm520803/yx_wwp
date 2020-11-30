@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "http://mybatis.org/dtd/mybatis-3-mapper.dtd" "mybatis-3-mapper.dtd" >
+<mapper namespace="com.baizhi.dao.AdminDAO">
+
+    <!--    差一个-->
+    <select id="queryOne" resultType="admin" parameterType="String">
+        select id,username,password from yx_admin where username = #{username}
+    </select>
+</mapper>

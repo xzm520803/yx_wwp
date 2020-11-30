@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "http://mybatis.org/dtd/mybatis-3-mapper.dtd" "mybatis-3-mapper.dtd" >
+<mapper namespace="com.baizhi.dao.SortDAO">
+
+    <!--查所有  分页-->
+    <select id="queryOne" resultType="Sort">
+        select id,cate_name,levels,parent_id
+        from yx_sort
+        where levels = #{levels}
+        limit #{start},#{rows}
+    </select>
+
+    <!--查数据库所有数据-->
+    <select id="totalCounts" resultType="Integer">
+        select count(id)
+        from yx_sort
+    </select>
+
+    <!--查所有  分页-->
+    <select id="queryTwo" resultType="Sort">
+        select id,cate_name,levels,parent_id
+        from yx_sort
+        where levels = #{levels} and parent_id = #{id}
+        limit #{begin},#{rows}
+    </select>
+
+    <!--查数据库所有数据-->
+    <select id="count" resultType="Integer">
+        select count(id)
+        from yx_sort
+    </select>
+
+
+    <!--添加一级类别-->
+    <insert id="addOne" parameterType="Sort">
+        insert into yx_sort
+        values (#{id},#{cate_name},#{levels},#{parent_id})
+    </insert>
+    <!--查所有一级-->
+    <select id="queryAllOne" resultType="Sort" parameterType="Integer">
+        select id,cate_name,levels,parent_id
+        from yx_sort
+        where levels=#{levels}
+    </select>
+    <!--添加二级类别-->
+    <insert id="addTwo" parameterType="Sort">
+        insert into yx_sort
+        values (#{id},#{cate_name},#{levels},#{parent_id})
+    </insert>
+
+    <!--修改一级或二级类别-->
+    <update id="updateOne" parameterType="Sort">
+        update yx_sort
+        <set>
+            <if test="cate_name!=null">cate_name=#{cate_name},</if>
+            <if test="levels!=null">levels=#{levels},</if>
+            <if test="parent_id!=null">parent_id=#{parent_id}</if>
+        </set>
+        where id = #{id}
+    </update>
+    <!--删除-->
+    <delete id="delete" parameterType="String">
+        delete from yx_sort
+        where id = #{id}
+    </delete>
+
+<!--    为删除类别提供类别类别数量查询方法-->
+    <select id="queryCategoryCounts" resultType="java.lang.Integer">
+        select count(id)
+        from yx_sort where parent_id = #{id}
+    </select>
+
+<!--  关系属性  -->
+    <resultMap id="queryAllCategory" type="Sort">
+        <!--主属性-->
+        <id column="cid" property="id"/>
+        <!--普通属性-->
+        <result column="CcateName" property="cate_name"/>
+        <result column="cLevels" property="levels"/>
+        <result column="cParentId" property="parent_id"/>
+        <!--一级类别下对应的是二级类别集合-->
+        <collection property="sortList" ofType="Sort">
+            <!--主属性-->
+            <id column="sid" property="id"/>
+            <!--普通属性-->
+            <result column="sCateName" property="cate_name"/>
+            <result column="sLevels" property="levels"/>
+            <result column="sParentId" property="parent_id"/>
+        </collection>
+    </resultMap>
+
+
+    <select id="queryAllCategory" resultMap="queryAllCategory">
+        select c.id cid,c.cate_name CcateName,c.levels cLevels,c.parent_id cParentId,
+        s.id sid,s.cate_name sCateName,s.levels sLevels,s.parent_id sParentId
+        from yx_sort c
+        left join yx_sort s
+        on c.id = s.parent_id
+        where c.levels = 1
+    </select>
+
+
+</mapper>
