@@ -73,6 +73,7 @@ class GoEasyTests {
     void git(){
         int aaa = 10;
         int bbb = 20;
+          System.out.println(aaa+bbb);
     }
 
 }
