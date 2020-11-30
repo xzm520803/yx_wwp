@@ -64,11 +64,15 @@ class GoEasyTests {
         //发送消息   参数:通道名称,消息内容
         goEasy.publish("2005-channel", "Hello, GoEasy! 2005");
 
-
+      
 
 
     }
 
-
+      @Test
+    void git(){
+        int aaa = 10;
+        int bbb = 20;
+    }
 
 }
